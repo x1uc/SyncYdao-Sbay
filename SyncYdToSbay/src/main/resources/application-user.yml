@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+
+scheduleTime: 3600000
+youdao:
+  collectionUrl: "https://dict.youdao.com/wordbook/webapi/v2/word/list?limit=10&offset=0&sort=time&lanTo=&lanFrom="
+  cookie: "input yourself youdao cookie"
+shanbay:
+  getWordUrl: "https://apiv3.shanbay.com/wordsapp/words/vocab?word="
+  collectionUrl: "https://apiv3.shanbay.com/wordscollection/words"
+  cookie: "input yourself shanbay cookie"
+user-agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+logging:
+  level:
+    root: warn
