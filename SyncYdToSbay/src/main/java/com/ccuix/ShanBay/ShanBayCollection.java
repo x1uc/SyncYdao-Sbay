@@ -19,7 +19,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @Slf4j
@@ -30,18 +32,33 @@ public class ShanBayCollection {
     public String getWordUrl;
     @Value("${shanbay.cookie}")
     private String cookie;
+    @Value("${decodeUrl}")
+    private String decodeUrl;
 
     /**
-     * @param youDaoData :  Required words
-     *                   add the words are contained youDaoData to ShanBay notebook
+     * Avoid repeated additions, as they count Sbay as new words
+     * Because Sbay has a special strategy for new words
      */
+    private static Set<YouDaoWordItem> set = new HashSet<>();
+
     public void addWordToShanBay(YouDaoData youDaoData) {
         List<YouDaoWordItem> itemList = youDaoData.getItemList();
+        List<YouDaoWordItem> neededAddWords = new ArrayList<>();
+        itemList.forEach(item -> {
+            if (!set.contains(item)) {
+                set.add(item);
+                neededAddWords.add(item);
+            }
+        });
+        if (neededAddWords.size() == 0) {
+            return;
+        }
         List<String> wordIds;
         // trans word to wordId(encoding) of shanBay
         wordIds = RequestWordIds(itemList);
         // trans the encoded wordId to wordId and word 
         List<ShanBayWordPair> shanBayWordPairList = Decoding(wordIds);
+        
         // add words to shanBay notebook
         Collection(shanBayWordPairList);
     }
@@ -97,7 +114,7 @@ public class ShanBayCollection {
         wordsData.forEach(item -> {
             try {
                 Thread.sleep(300);
-                PostMethod postMethod = new PostMethod("http://localhost:3000");
+                PostMethod postMethod = new PostMethod(decodeUrl);
                 // add post body 
                 RequestEntity requestEntity = getRequestEntity(item);
                 postMethod.setRequestEntity(requestEntity);

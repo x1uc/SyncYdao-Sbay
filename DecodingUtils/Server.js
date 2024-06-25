@@ -3,7 +3,7 @@ import bodyParser from 'body-parser'
 import {decode} from './ShanbayApiUtils.js'
 
 const app = express()
-const port = 3000
+const port = 3001
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json({limit: '50mb'}));
